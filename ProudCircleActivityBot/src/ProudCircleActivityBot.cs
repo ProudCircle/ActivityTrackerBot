@@ -11,6 +11,7 @@ public class ProudCircleActivityBot {
     public DiscordClient DiscordClient { get; private set; }
     public CommandsNextExtension CommandsExtension { get; private set; }
     public SettingsConf Conf { get; private set; }
+    private VersionInfo _versionInfo = new VersionInfo();
 
     /// <summary>
     /// Starts the discord bot.
@@ -62,6 +63,6 @@ public class ProudCircleActivityBot {
     }
 
     private async Task OnReadyEvent(DiscordClient discordClient, ReadyEventArgs eventArgs) {
-        discordClient.Logger.LogInformation(new EventId(900, "Startup"), "Bot has logged in!");
+        discordClient.Logger.LogInformation(new EventId(900, "Startup"), $"Bot is ready ({_versionInfo.PrettyName})");
     }
 }
