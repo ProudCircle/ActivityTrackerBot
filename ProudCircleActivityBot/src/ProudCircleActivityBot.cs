@@ -2,6 +2,7 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace ProudCircleActivityBot;
@@ -43,6 +44,7 @@ public class ProudCircleActivityBot {
             EnableDms = false,
             DmHelp = false,
             EnableDefaultHelp = false,
+            Services = new ServiceCollection().AddSingleton(Conf).BuildServiceProvider()
             // TODO: Create custom help
         };
         CommandsExtension = DiscordClient.UseCommandsNext(textCommandConfig);
