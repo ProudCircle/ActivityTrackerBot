@@ -6,6 +6,7 @@ namespace ProudCircleActivityBot;
 
 public class PrefixCommands : BaseCommandModule {
     public SettingsConf Conf { private get; set; }
+    private VersionInfo _versionInfo = new VersionInfo();
     
     // TODO: Custom Help Command (auto generated)
     [Command("help")]
@@ -21,7 +22,7 @@ public class PrefixCommands : BaseCommandModule {
             .AddField("guildid", "View the Proud Circle Hypixel Guild ID")
             // .WithAuthor("illyum")
             .WithTimestamp(DateTimeOffset.Now)
-            .WithFooter("Activity Tracker | v0.0.1");
+            .WithFooter($"Activity Tracker | {_versionInfo.PrettyName}");
         DiscordEmbed helpEmbed = embedBuilder.Build();
         await ctx.RespondAsync(helpEmbed);
     }
@@ -35,7 +36,7 @@ public class PrefixCommands : BaseCommandModule {
     [Command("version")]
     [Description("Shows the current version of the discord bot")]
     public async Task VersionCommand(CommandContext ctx) {
-        await ctx.RespondAsync($"I'm currently on version 0.0.1!");
+        await ctx.RespondAsync($"I'm currently on `{_versionInfo.PrettyName}`!");
     }
 
     [Command("source")]
