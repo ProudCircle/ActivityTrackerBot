@@ -15,7 +15,9 @@ public class PrefixCommands : BaseCommandModule {
         var embedBuilder = new DiscordEmbedBuilder()
             .WithTitle("Activity Tracker Help")
             .WithColor(DiscordColor.Magenta)
-            .WithDescription($"All commands require a prefix: `{Conf.Prefix}`\nExample: `{Conf.Prefix}version`")
+            .WithDescription($"All commands require a prefix: `{Conf.Prefix}`" +
+                             $"\nExample: `{Conf.Prefix}version`" +
+                             $"\nmYou can also mention me instead of using a prefix: '@Activity Tracker' ping")
             .AddField("ping", "Tests if bot is responsive")
             .AddField("version", "Shows the current version of the discord bot")
             .AddField("source", "View the bot's source code")
