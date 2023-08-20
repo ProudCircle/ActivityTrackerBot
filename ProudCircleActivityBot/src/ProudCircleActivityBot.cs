@@ -2,6 +2,8 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.SlashCommands;
+using DSharpPlus.SlashCommands.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -10,6 +12,7 @@ namespace ProudCircleActivityBot;
 public class ProudCircleActivityBot {
     public DiscordClient DiscordClient { get; private set; }
     public CommandsNextExtension CommandsExtension { get; private set; }
+    public SlashCommandsExtension SlashCommandsExtension { get; private set; }
     public SettingsConf Conf { get; private set; }
     private VersionInfo _versionInfo = new VersionInfo();
 
@@ -21,7 +24,7 @@ public class ProudCircleActivityBot {
     public async Task RunBotAsync() {
         var SettingsConfLoader = new SettingsConfLoader();
         // TODO: Throw/Catch Exception on Config Load
-        SettingsConfLoader.LoadConfigSync();  // Load Sync first time
+        SettingsConfLoader.LoadConfigSync(); // Load Sync first time
         Conf = SettingsConfLoader.SettingsConf;
 
         var discordConfiguration = new DiscordConfiguration {
@@ -38,9 +41,10 @@ public class ProudCircleActivityBot {
 
         DiscordClient = new DiscordClient(discordConfiguration);
         RegisterEvents(DiscordClient);
-        
+
+        // Text Commands
         var textCommandConfig = new CommandsNextConfiguration {
-            StringPrefixes = new string[] {Conf.Prefix},
+            StringPrefixes = new string[] { Conf.Prefix },
             EnableMentionPrefix = true,
             EnableDms = false,
             DmHelp = false,
@@ -50,7 +54,15 @@ public class ProudCircleActivityBot {
         };
         CommandsExtension = DiscordClient.UseCommandsNext(textCommandConfig);
         CommandsExtension.RegisterCommands<PrefixCommands>();
-        
+
+        // Slash Commands
+        var slashCommandConfig = new SlashCommandsConfiguration {
+            Services = new ServiceCollection().AddSingleton(Conf).BuildServiceProvider()
+        };
+        SlashCommandsExtension = DiscordClient.UseSlashCommands(slashCommandConfig);
+        SlashCommandsExtension.RegisterCommands<SlashCommands>();
+        SlashCommandsExtension.SlashCommandErrored += OnSlashCommandErrored;
+
         // Start Bot
         DiscordActivity activity = new DiscordActivity("every guild member!", ActivityType.Watching);
         await DiscordClient.ConnectAsync(activity);
@@ -64,5 +76,18 @@ public class ProudCircleActivityBot {
 
     private async Task OnReadyEvent(DiscordClient discordClient, ReadyEventArgs eventArgs) {
         discordClient.Logger.LogInformation(new EventId(900, "Startup"), $"Bot is ready ({_versionInfo.PrettyName})");
+    }
+
+    private async Task OnSlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs args) {
+        if (args.Exception is not SlashExecutionChecksFailedException) {
+            return;
+        }
+
+        await args.Context.CreateResponseAsync(new ResponseEmbed()
+            .EmbedBuilder.WithColor(new DiscordColor("#FF0000"))
+            .WithDescription(":x: You probably don't have permission for this command.\n" +
+                             "If you think this is a bug please report it to my admin!").Build());
+        DiscordClient.Logger.LogError(new EventId(800),
+            $"a SlashCommandError occured: {args.Exception.Message} | {args.Exception.StackTrace}");
     }
 }
