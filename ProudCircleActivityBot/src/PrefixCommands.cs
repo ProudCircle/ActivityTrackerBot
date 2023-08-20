@@ -5,6 +5,9 @@ using DSharpPlus.Entities;
 namespace ProudCircleActivityBot; 
 
 public class PrefixCommands : BaseCommandModule {
+    public SettingsConf Conf { private get; set; }
+    private VersionInfo _versionInfo = new VersionInfo();
+    
     // TODO: Custom Help Command (auto generated)
     [Command("help")]
     [Description("Show available commands")]
@@ -12,14 +15,16 @@ public class PrefixCommands : BaseCommandModule {
         var embedBuilder = new DiscordEmbedBuilder()
             .WithTitle("Activity Tracker Help")
             .WithColor(DiscordColor.Magenta)
-            .WithDescription($"All commands require a prefix: `!!help`")
+            .WithDescription($"All commands require a prefix: `{Conf.Prefix}`" +
+                             $"\nExample: `{Conf.Prefix}version`" +
+                             $"\nmYou can also mention me instead of using a prefix: '@Activity Tracker' ping")
             .AddField("ping", "Tests if bot is responsive")
             .AddField("version", "Shows the current version of the discord bot")
             .AddField("source", "View the bot's source code")
             .AddField("guildid", "View the Proud Circle Hypixel Guild ID")
             // .WithAuthor("illyum")
             .WithTimestamp(DateTimeOffset.Now)
-            .WithFooter("Activity Tracker | v0.0.1");
+            .WithFooter($"Activity Tracker | {_versionInfo.PrettyName}");
         DiscordEmbed helpEmbed = embedBuilder.Build();
         await ctx.RespondAsync(helpEmbed);
     }
@@ -33,7 +38,7 @@ public class PrefixCommands : BaseCommandModule {
     [Command("version")]
     [Description("Shows the current version of the discord bot")]
     public async Task VersionCommand(CommandContext ctx) {
-        await ctx.RespondAsync($"I'm currently on version 0.0.1!");
+        await ctx.RespondAsync($"I'm currently on `{_versionInfo.PrettyName}`!");
     }
 
     [Command("source")]
