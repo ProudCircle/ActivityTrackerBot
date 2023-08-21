@@ -5,6 +5,9 @@ using DSharpPlus.SlashCommands.Attributes;
 namespace ProudCircleActivityBot; 
 
 public class SlashCommands : ApplicationCommandModule {
+    public SettingsConf Conf { private get; set; }
+    
+    
     [SlashCommand("status", "Shows some statistics for the bot")]
     public async Task StatusSlashCommand(InteractionContext ctx) {
         var responseEmbed = new ResponseEmbed();
@@ -20,5 +23,13 @@ public class SlashCommands : ApplicationCommandModule {
         responseEmbed.EmbedBuilder.WithTitle("Success!");
         responseEmbed.EmbedBuilder.WithDescription("Seems like you have permissions to run this command!");
         await ctx.CreateResponseAsync(responseEmbed.EmbedBuilder.Build());
+    }
+    
+    [SlashCommand("testkey", "Tests the Hypixel API Key")]
+    [SlashRequirePermissions(Permissions.Administrator)]
+    public async Task TestKeySlashCommand(InteractionContext ctx) {
+        var responseEmbed = new ResponseEmbed()
+            .EmbedBuilder.WithTitle($"Key: '{Conf.HypixelApKey}'");
+        await ctx.CreateResponseAsync(responseEmbed.Build(), true);
     }
 }
