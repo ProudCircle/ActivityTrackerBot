@@ -29,7 +29,7 @@ public class SlashCommands : ApplicationCommandModule {
     [SlashRequirePermissions(Permissions.Administrator)]
     public async Task TestKeySlashCommand(InteractionContext ctx) {
         var responseEmbed = new ResponseEmbed()
-            .EmbedBuilder.WithTitle($"Key: '{Conf.HypixelApKey}'");
+            .EmbedBuilder.WithTitle($"Key: '{Conf.HypixelApKey.Length-4 * '*'}{Conf.HypixelApKey[-4]}'");
         await ctx.CreateResponseAsync(responseEmbed.Build(), true);
     }
 }
