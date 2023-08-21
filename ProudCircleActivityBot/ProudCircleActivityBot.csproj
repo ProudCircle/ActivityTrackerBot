@@ -15,8 +15,4 @@
       <PackageReference Include="DSharpPlus.VoiceNext" Version="4.4.2" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="src\Conf\" />
-    </ItemGroup>
-
 </Project>
