@@ -1,15 +1,26 @@
 ﻿using System.Text;
+using System.Text.Json.Nodes;
 using Newtonsoft.Json;
 
 namespace ProudCircleActivityBot; 
 
 public class SettingsConf {
     public SettingsConfLoader Loader { get; set; }
-    [JsonProperty("token")]
-    public string Token { get; private set; }
-
-    [JsonProperty("prefix")]
-    public string Prefix { get; set; }
+    
+    /// <summary>
+    /// Discord Login OAuth Token
+    /// </summary>
+    [JsonProperty("token")] public string Token { get; private set; }
+    
+    /// <summary>
+    /// Prefix for text commands
+    /// </summary>
+    [JsonProperty("prefix")] public string Prefix { get; set; }
+    
+    /// <summary>
+    /// Hypixel API Key
+    /// </summary>
+    [JsonProperty("hypixel_api_key")] public string HypixelApKey { get; set; }
 }
 
 public class SettingsConfLoader {
@@ -34,11 +45,33 @@ public class SettingsConfLoader {
     /// </summary>
     /// <exception cref="InvalidOperationException"></exception>
     public void LoadConfigSync() {
-        var json = string.Empty;
-        using (var fileStream = File.OpenRead(ConfigPath))
-        using (var streamReader = new StreamReader(fileStream, new UTF8Encoding(false)))
-            json = streamReader.ReadToEnd();
-        SettingsConf = JsonConvert.DeserializeObject<SettingsConf>(json) ?? throw new InvalidOperationException("Error loading config (Sync)");
-        SettingsConf.Loader = this;
+        CheckConfig();
+        try {
+            var json = string.Empty;
+            using (var fileStream = File.OpenRead(ConfigPath))
+            using (var streamReader = new StreamReader(fileStream, new UTF8Encoding(false)))
+                json = streamReader.ReadToEnd();
+            SettingsConf = JsonConvert.DeserializeObject<SettingsConf>(json) ??
+                           throw new InvalidOperationException("Error loading config (Sync)");
+            SettingsConf.Loader = this;
+        }
+        catch (JsonException e) {
+            throw new IOException($"Invalid config file: {e}");
+        }
+    }
+
+    public void CheckConfig() {
+        if (!File.Exists(ConfigPath)) {
+            GenerateDefaults();
+        }
+    }
+
+    public void GenerateDefaults() {
+        Dictionary<string, string> conf = new Dictionary<string, string>();
+        conf.Add("token", "");
+        conf.Add("prefix", "!!");
+        conf.Add("hypixel_api_key", "");
+        var confStr = JsonConvert.SerializeObject(conf, Formatting.Indented);
+        File.WriteAllText(ConfigPath, confStr);
     }
 }
