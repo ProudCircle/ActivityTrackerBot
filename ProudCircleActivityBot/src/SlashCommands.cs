@@ -6,6 +6,17 @@ namespace ProudCircleActivityBot;
 
 public class SlashCommands : ApplicationCommandModule {
     public SettingsConf Conf { private get; set; }
+    
+    // TODO: Custom Help Slash Command (auto generated)
+    [SlashCommand("help", "Shows available slash commands")]
+    public async Task HelpSlashCommand(InteractionContext ctx) {
+        var responseEmbed = new ResponseEmbed();
+        responseEmbed.EmbedBuilder.WithTitle("Activity Tracker Slash Commands Help");
+        responseEmbed.EmbedBuilder.AddField("status", "Shows some statistics for the bot");
+        responseEmbed.EmbedBuilder.AddField("admin", "Test admin privileges");
+        responseEmbed.EmbedBuilder.AddField("testkey", "Shows current config key (Admin Only)");
+        await ctx.CreateResponseAsync(responseEmbed.EmbedBuilder.Build());
+    }
 
 
     [SlashCommand("status", "Shows some statistics for the bot")]
