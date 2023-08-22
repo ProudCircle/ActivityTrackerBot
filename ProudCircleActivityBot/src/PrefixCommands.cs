@@ -10,7 +10,7 @@ public class PrefixCommands : BaseCommandModule {
     
     // TODO: Custom Help Command (auto generated)
     [Command("help")]
-    [Description("Show available commands")]
+    [Description("Show available prefix commands")]
     public async Task HelpCommand(CommandContext ctx) {
         var embedBuilder = new DiscordEmbedBuilder()
             .WithTitle("Activity Tracker Help")
