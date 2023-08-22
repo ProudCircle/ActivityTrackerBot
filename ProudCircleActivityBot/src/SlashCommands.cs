@@ -12,9 +12,9 @@ public class SlashCommands : ApplicationCommandModule {
     public async Task HelpSlashCommand(InteractionContext ctx) {
         var responseEmbed = new ResponseEmbed();
         responseEmbed.EmbedBuilder.WithTitle("Activity Tracker Slash Commands Help");
-        responseEmbed.EmbedBuilder.AddField("status", "Shows some statistics for the bot");
-        responseEmbed.EmbedBuilder.AddField("admin", "Test admin privileges");
-        responseEmbed.EmbedBuilder.AddField("testkey", "Shows current config key (Admin Only)");
+        responseEmbed.EmbedBuilder.AddField("/status", "Shows some statistics for the bot");
+        responseEmbed.EmbedBuilder.AddField("/admin", "Test admin privileges");
+        responseEmbed.EmbedBuilder.AddField("/testkey", "Shows current config key (Admin Only)");
         await ctx.CreateResponseAsync(responseEmbed.EmbedBuilder.Build());
     }
 
