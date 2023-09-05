@@ -1,4 +1,5 @@
-﻿using DSharpPlus;
+﻿using System.Timers;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -6,6 +7,9 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
+using Timer = System.Timers.Timer;
+
 
 namespace ProudCircleActivityBot;
 
@@ -66,8 +70,18 @@ public class ProudCircleActivityBot {
         // Start Bot
         DiscordActivity activity = new DiscordActivity("every guild member!", ActivityType.Watching);
         await DiscordClient.ConnectAsync(activity);
+
+        TimerService timerService = new TimerService(TimerElapsed, 10);
+        timerService.Start();
+
+
         await Task.Delay(-1);
     }
+
+    private async Task TimerElapsed() {
+        Console.Out.WriteLine("olo");
+    }
+
 
     private void RegisterEvents(DiscordClient discordClient) {
         // On Ready
