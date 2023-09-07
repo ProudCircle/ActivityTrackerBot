@@ -97,7 +97,7 @@ public class ProudCircleActivityBot {
         await args.Context.CreateResponseAsync(new ResponseEmbed()
             .EmbedBuilder.WithColor(new DiscordColor("#FF0000"))
             .WithDescription(":x: You probably don't have permission for this command.\n" +
-                             "If you think this is a bug please report it to my admin!").Build());
+                             "If you think this is a bug please report it to my developer!").Build());
         DiscordClient.Logger.LogError(new EventId(800),
             $"a SlashCommandError occured: {args.Exception.Message} | {args.Exception.StackTrace}");
     }
