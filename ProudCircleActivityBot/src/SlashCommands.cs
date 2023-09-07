@@ -1,4 +1,5 @@
-﻿using DSharpPlus;
+﻿using System.Reflection;
+using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using Microsoft.Data.Sqlite;
@@ -107,5 +108,31 @@ public class SlashCommands : ApplicationCommandModule {
             insertCommand.Parameters.AddWithValue("@jsonData", playerData);
             await insertCommand.ExecuteNonQueryAsync();
         }
+    }
+    
+    [SlashCommand("testyaml", "Test config file")]
+    [SlashRequirePermissions(Permissions.Administrator)]
+    public async Task TestYamlSlashCommand(InteractionContext ctx) {
+        YamlConfLoader confLoader = new YamlConfLoader();
+        confLoader.LoadConfig();
+        var conf = confLoader.YamlConf;
+
+        Console.Out.WriteLine("Loaded YAML Conf!");
+
+        Console.Out.WriteLine($"Token: {conf.token}" +
+                              $"Guild: {conf.guid}" +
+                              $"Api Key: {conf.apikey}" +
+                              $"Prefix: {conf.prefix}" +
+                              $"Database:" +
+                              $"\tType: {conf.database.type}" +
+                              $"MySql:" +
+                              $"\tAddress: {conf.mysql.address}" +
+                              $"\tPort: {conf.mysql.port}" +
+                              $"\tUsername: {conf.mysql.username}");
+        
+        var responseEmbed = new ResponseEmbed();
+        responseEmbed.EmbedBuilder.WithTitle("Success!");
+        responseEmbed.EmbedBuilder.WithDescription("The config file was loaded correctly!");
+        await ctx.CreateResponseAsync(responseEmbed.EmbedBuilder.Build());
     }
 }
