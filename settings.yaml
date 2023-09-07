@@ -1,0 +1,28 @@
+﻿# Discord Bot Token (Discord Developer Portal)
+token: token
+
+# Discord Server ID
+guid: 100000000000
+
+# Hypixel API Key
+apikey: key
+
+# Prefix Commands (eg. !help)
+prefix: !
+
+# Storage Medium (Note: ONLY EFFECTIVE ON RESET)
+# Options: mysql/sqlite
+database:
+  type: sqlite
+  
+# Uncomment these lines if you're using mysql
+#mysql:
+#  address: 127.0.0.1
+#  port: 3306
+#  username: user
+#  password: password
+#  auth: mysql_raw_password
+
+# Uncomment these lines if you're using sqlite
+sqlite:
+  filename: DATA.db
