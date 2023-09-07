@@ -8,8 +8,6 @@ using DSharpPlus.SlashCommands.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using Timer = System.Timers.Timer;
-
 
 namespace ProudCircleActivityBot;
 
@@ -71,15 +69,7 @@ public class ProudCircleActivityBot {
         DiscordActivity activity = new DiscordActivity("every guild member!", ActivityType.Watching);
         await DiscordClient.ConnectAsync(activity);
 
-        TimerService timerService = new TimerService(TimerElapsed, 10);
-        timerService.Start();
-
-
         await Task.Delay(-1);
-    }
-
-    private async Task TimerElapsed() {
-        Console.Out.WriteLine("olo");
     }
 
 
@@ -94,6 +84,13 @@ public class ProudCircleActivityBot {
 
     private async Task OnSlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs args) {
         if (args.Exception is not SlashExecutionChecksFailedException) {
+            DiscordClient.Logger.LogError(new EventId(804, "SlashCommandException"), args.Exception,
+                $"Message: {args.Exception.Message}\nStack Trace: {args.Exception.StackTrace}");
+            await args.Context.CreateResponseAsync(new ResponseEmbed().EmbedBuilder.WithTitle(":x: Oh no!")
+                .WithDescription(
+                    "It looks like there's been an error!\nPlease please contact my developer to report the issue!")
+                .WithColor(new DiscordColor("#ff1010"))
+                .Build());
             return;
         }
 
